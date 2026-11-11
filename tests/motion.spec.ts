@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 test('every main page introduction shares the entrance and honors reduced motion', async ({ page }) => {
-  const introductions = [['/', '.portfolio-hero'], ['/work/', '.work-intro'], ['/about/', '.about-intro'], ['/code/', '.code-intro'], ['/docs/', '.index-intro']];
+  const introductions = [['/', '.portfolio-hero'], ['/work/', '.work-intro'], ['/about/', '.about-intro'], ['/code/', '.code-intro']];
   for (const [path, selector] of introductions) {
     await page.goto(path!);
     const intro = page.locator(selector!);
@@ -11,7 +11,7 @@ test('every main page introduction shares the entrance and honors reduced motion
   }
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.reload();
-  await expect(page.locator('.index-intro')).toHaveCSS('animation-name', 'none');
+  await expect(page.locator('.code-intro')).toHaveCSS('animation-name', 'none');
   await page.goto('/work/');
   await expect(page.locator('.work-intro')).toHaveCSS('animation-name', 'none');
   await expect(page.locator('.work-intro')).toHaveCSS('opacity', '1');

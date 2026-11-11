@@ -3,63 +3,55 @@ import assert from "node:assert/strict";
 import { readFile, access } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-
-const root = new URL("../", import.meta.url);
-const origin = "https://portfolio.example.test";
-for (const [url, indexable] of [["", "true"], ["http://example.test", "true"], [`${origin}/nested/`, "false"], ["https://user:example@example.test", "false"], [origin, "yes"]]) {
-  const invalid = spawnSync(process.execPath, ["--input-type=module", "--eval", "await import('./apps/web/site.config.mjs')"], {
-    cwd: fileURLToPath(root), encoding: "utf8", env: { ...process.env, SITE_URL: url, SITE_INDEXABLE: indexable, CF_WEB_ANALYTICS_ENABLED: "false", CF_WEB_ANALYTICS_TOKEN: "" },
-  });
-  assert.notEqual(invalid.status, 0, "Invalid site settings must fail rather than silently generate launch metadata.");
-}
-for (const fixture of [
-  { name: "local", url: "", indexable: false },
-  { name: "preview", url: origin, indexable: false },
-  { name: "production", url: origin, indexable: true },
-  { name: "analytics", url: origin, indexable: true, analytics: true },
+import pages from "../apps/web/page-metadata.json" with { type: "json" };
+const root = new URL("../", import.meta.url), origin = "https://portfolio.example.test";
+const baseEnv = { ...process.env, CF_WEB_ANALYTICS_ENABLED: "false", CF_WEB_ANALYTICS_TOKEN: "", ANALYTICS_ENABLED: "false" };
+delete baseEnv.DOCS_URL;
+await assert.rejects(access(new URL('apps/web/docs.config.mjs', root)));
+await assert.rejects(access(new URL('apps/web/src/components/DocsLink.astro', root)));
+for (const setting of [
+  { SITE_URL:"", SITE_INDEXABLE:"true" },{ SITE_URL:"http://example.test", SITE_INDEXABLE:"true" },
+  { SITE_URL:origin+"/nested/", SITE_INDEXABLE:"false" }, { SITE_URL:origin,SITE_INDEXABLE:"yes" },
+  { SITE_URL:origin,SITE_INDEXABLE:"false",ANALYTICS_ENABLED:"true" },
+  { SITE_URL:origin,SITE_INDEXABLE:"true",ANALYTICS_ENABLED:"yes" },
+  { SITE_URL:origin,SITE_INDEXABLE:"true",CF_WEB_ANALYTICS_ENABLED:"true" },
 ]) {
-  const directory = new URL(`.cache/site-builds/${fixture.name}/`, root);
-  const build = spawnSync("pnpm", ["--filter", "web", "build", "--outDir", fileURLToPath(directory)], {
-    cwd: fileURLToPath(root), encoding: "utf8",
-    env: { ...process.env, SITE_URL: fixture.url, SITE_INDEXABLE: String(fixture.indexable), CF_WEB_ANALYTICS_ENABLED: String(Boolean(fixture.analytics)), CF_WEB_ANALYTICS_TOKEN: fixture.analytics ? "0".repeat(32) : "" },
-  });
-  if (build.status !== 0) throw new Error(build.stdout + build.stderr);
-  const read = path => readFile(new URL(path, directory), "utf8");
-  const home = await read("index.html");
-  const chapter = await read("docs/customize/index.html");
-  const missing = await read("404.html");
-  const privacy = await read("privacy/index.html");
-  assert.ok(privacy.includes(fixture.analytics ? "uses Cloudflare Web Analytics" : "currently uses no visitor analytics"), "Privacy text must match analytics configuration.");
-  assert.equal(home.includes("https://static.cloudflareinsights.com/beacon.min.js"), Boolean(fixture.analytics), "Only explicitly enabled production fixtures may contain a beacon.");
-  assert.ok(/<title>Yeuanne Berry<\/title>/.test(home), `${fixture.name}: plain title`);
-  assert.ok(/property="og:image" content="https?:[^\"]+\/social-card.png"/.test(home), `${fixture.name}: share image URL`);
-  assert.ok(/name="robots" content="noindex, nofollow"/.test(missing), `${fixture.name}: 404 must stay unindexed`);
-  if (fixture.url) {
-    assert.ok(home.includes(`rel="canonical" href="${origin}/"`));
-    assert.ok(chapter.includes(`rel="canonical" href="${origin}/docs/customize/"`));
-    assert.ok(home.includes(`property="og:image" content="${origin}/social-card.png"`));
-  } else assert.doesNotMatch(home, /rel="canonical"/);
-  if (fixture.indexable) {
-    assert.match(home, /name="robots" content="index, follow"/);
-    assert.ok((await read("robots.txt")).includes(`Sitemap: ${origin}/sitemap-index.xml`));
-    const sitemap = await read("sitemap-0.xml");
-    assert.ok(sitemap.includes(`${origin}/docs/customize/`));
-    assert.ok(sitemap.includes(`${origin}/work/softlysang/`));
-    assert.doesNotMatch(sitemap, /404|localhost|127\.0\.0\.1/);
-  } else {
-    assert.match(home, /name="robots" content="noindex, nofollow"/);
-    assert.equal(await read("robots.txt"), "User-agent: *\nDisallow: /\n");
-    await assert.rejects(access(new URL("sitemap-index.xml", directory)));
+  const invalid=spawnSync(process.execPath,["--input-type=module","--eval","await import('./apps/web/site.config.mjs')"],{cwd:fileURLToPath(root),encoding:"utf8",env:{...baseEnv,...setting}});
+  assert.notEqual(invalid.status,0,"Unsafe site/analytics configuration must fail");
+}
+const decode = value => value.replaceAll("&amp;","&").replaceAll("&quot;",'"').replaceAll("&#39;","'").replaceAll("&#x27;","'").replaceAll("&lt;","<").replaceAll("&gt;",">");
+for (const fixture of [{name:"local",url:"",indexable:false},{name:"preview",url:origin,indexable:false},{name:"production",url:origin,indexable:true},{name:"analytics",url:origin,indexable:true,analytics:true}]) {
+  const directory=new URL(".cache/site-builds/"+fixture.name+"/",root);
+  const build=spawnSync("pnpm",["--filter","web","build","--outDir",fileURLToPath(directory)],{cwd:fileURLToPath(root),encoding:"utf8",env:{...baseEnv,SITE_URL:fixture.url,SITE_INDEXABLE:String(fixture.indexable),ANALYTICS_ENABLED:String(Boolean(fixture.analytics))}});
+  if(build.status!==0)throw Error(build.stdout+build.stderr);
+  const read=path=>readFile(new URL(path,directory),"utf8"), titles=new Set(), images=new Set();
+  for (const [route,meta] of Object.entries(pages)) {
+    const html=await read(route==="/404/"?"404.html":route.slice(1)+"index.html");
+    assert.equal(decode(html.match(/<title>(.*?)<\/title>/s)[1]),meta.title);
+    assert.equal(decode(html.match(/name="description" content="([^"]+)"/)[1]),meta.description);
+    assert.ok(!titles.has(meta.title),"Titles must be unique"); titles.add(meta.title);
+    assert.doesNotMatch(html,/cloudflareinsights\.com/);
+    assert.doesNotMatch(html, /docs_open|data-analytics-related-origin|data-stats-target="docs"|href="[^"]*(?:\/docs\/|4322)/);
+    assert.ok(html.includes('data-analytics-enabled="'+Boolean(fixture.analytics)+'"'));
+    const image=html.match(/property="og:image" content="([^"]+)"/)[1], imageURL=new URL(image);
+    assert.match(imageURL.pathname,/^\/og\/[a-z0-9-]+-[a-f0-9]{16}\.png$/);
+    assert.ok(!images.has(imageURL.pathname),"Each route needs its own card"); images.add(imageURL.pathname);
+    const bytes=await readFile(new URL(imageURL.pathname.slice(1),directory));
+    assert.equal(bytes.readUInt32BE(16),1200); assert.equal(bytes.readUInt32BE(20),630); assert.ok(bytes.length<1000000);
+    assert.ok(html.includes('name="robots" content="'+(fixture.indexable&&route!=="/404/"?"index, follow":"noindex, nofollow")+'"'));
+    if (fixture.url && route!=="/404/") assert.ok(html.includes('rel="canonical" href="'+origin+route+'"')); else assert.doesNotMatch(html,/rel="canonical"/);
   }
-  console.log(`PASS ${fixture.name}: metadata, canonical URLs, robots, sitemap and 404`);
-}
-for (const settings of [
-  { SITE_INDEXABLE: "false", CF_WEB_ANALYTICS_ENABLED: "true", CF_WEB_ANALYTICS_TOKEN: "0".repeat(32) },
-  { SITE_INDEXABLE: "true", CF_WEB_ANALYTICS_ENABLED: "true", CF_WEB_ANALYTICS_TOKEN: "invalid" },
-  { SITE_INDEXABLE: "true", CF_WEB_ANALYTICS_ENABLED: "yes", CF_WEB_ANALYTICS_TOKEN: "" },
-]) {
-  const invalid = spawnSync(process.execPath, ["--input-type=module", "--eval", "await import('./apps/web/site.config.mjs')"], {
-    cwd: fileURLToPath(root), encoding: "utf8", env: { ...process.env, SITE_URL: origin, ...settings },
-  });
-  assert.notEqual(invalid.status, 0, "Invalid analytics settings must fail.");
+  await assert.rejects(access(new URL("docs/index.html",directory)));
+  const home=await read("index.html");
+  assert.doesNotMatch(home, /docs_open|data-analytics-related-origin|data-stats-target="docs"|href="[^"]*\/docs\//);
+  const privacy=await read("privacy/index.html");
+  assert.ok(privacy.includes(fixture.analytics?"Limited first-party analytics is enabled":"Analytics is currently disabled"));
+  if(fixture.indexable) {
+    const sitemap=await read("sitemap-0.xml");
+    for(const route of Object.keys(pages).filter(p=>p!=="/404/"))assert.ok(sitemap.includes(origin+route));
+    assert.doesNotMatch(sitemap,/404|localhost|127\.0\.0\.1|\/docs\//);
+    assert.ok((await read("robots.txt")).includes(origin+"/sitemap-index.xml"));
+  } else { assert.equal(await read("robots.txt"),"User-agent: *\nDisallow: /\n");await assert.rejects(access(new URL("sitemap-index.xml",directory))); }
+  if(fixture.url)assert.ok(home.includes('type="application/ld+json"'));
+  console.log("PASS "+fixture.name+": every route metadata, unique image, indexing, canonical, sitemap and first-party analytics state");
 }

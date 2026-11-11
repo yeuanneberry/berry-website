@@ -8,9 +8,7 @@
 .portfolio-section { padding-top: 3rem; border-top: 1px solid var(--border); margin-top: 4rem; }
 .portfolio-section .work-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem; }
 .portfolio-section .work-card h2 { font-size: 1.3rem; }
-.two-paths { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 6rem; }
-.two-paths h2 { font-size: clamp(1.5rem, 2.5vw, 2.1rem); line-height: 1.6; }
-.path-links { display: grid; gap: 1rem; }
+.path-links { display: grid; gap: 1rem; margin-top: 1.5rem; }
 .path-links > a { display: block; position: relative; border: 1px solid var(--border); padding: 1.4rem 3rem 1.4rem 1.5rem; background: var(--surface); text-decoration: none; }
 .path-links > a:hover { border-color: var(--olive); }
 .path-links h3 { font-size: 1rem; margin-block: .75rem .4rem; }
@@ -41,17 +39,14 @@
 .repository-card h2 a { text-decoration: none; }
 .repository-card > p { color: var(--muted); font-size: .85rem; line-height: 1.9; margin-block: 1rem 1.75rem; }
 .repository-card > a { margin-top: auto; width: fit-content; }
-.code-berry { border-top: 1px solid var(--border); margin-top: 4rem; padding-top: 3rem; }
-.code-berry > p:not(.eyebrow) { color: var(--muted); margin-bottom: 2rem; }
-@media (max-width: 1000px) { .portfolio-hero { grid-template-columns: minmax(0, 1fr) 14rem; gap: 2.5rem; } .portfolio-section .work-grid { gap: 1.3rem; } .two-paths { gap: 3rem; } }
+@media (max-width: 1000px) { .portfolio-hero { grid-template-columns: minmax(0, 1fr) 14rem; gap: 2.5rem; } .portfolio-section .work-grid { gap: 1.3rem; } }
 @media (max-width: 700px) {
   .portfolio-hero { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; padding-top: 0; }
   .portrait-wrap { grid-row: 1; justify-self: start; padding: .5rem; }
   .portrait-wrap img { width: 12rem; }
   .portfolio-hero h1 { font-size: clamp(2.5rem, 9vw, 3.5rem); }
-  .portfolio-section .work-grid, .repository-grid, .two-paths { grid-template-columns: minmax(0, 1fr); }
+  .portfolio-section .work-grid, .repository-grid { grid-template-columns: minmax(0, 1fr); }
   .portfolio-section { margin-top: 3rem; padding-top: 2rem; }
-  .two-paths { gap: 2rem; }
   .about-page, .code-page { padding-block: 2.5rem 3rem; }
   .about-intro { flex-direction: column-reverse; align-items: start; gap: 2rem; padding-bottom: 2rem; }
   .about-body { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; padding-top: 2.5rem; }

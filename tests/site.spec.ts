@@ -5,10 +5,10 @@ test('sharing metadata, local font and preview indexing are consistent', async (
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
   await expect(page.locator('link[rel="canonical"]')).toHaveCount(0);
   await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
-  await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute('content', 'Yeuanne Berry');
+  await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute('content', 'Yeuanne Berry — Web developer · IT administrator');
   const imageURL = await page.locator('meta[property="og:image"]').getAttribute('content');
-  expect(new URL(imageURL!).pathname).toBe('/social-card.png');
-  const image = await request.get('/social-card.png');
+  expect(new URL(imageURL!).pathname).toMatch(/^\/og\/home-[a-f0-9]{16}\.png$/);
+  const image = await request.get(new URL(imageURL!).pathname);
   expect(image.status()).toBe(200);
   const bytes = await image.body();
   expect(bytes.readUInt32BE(16)).toBe(1200);

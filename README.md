@@ -1,30 +1,17 @@
-# Yeuanne Berry
+# Berry website
 
-A personal portfolio, five project case studies, a curated public-code collection,
-and a six-chapter Berry configuration manual. The featured websites were delivered
-through Yappers; each case study records the owner's specific contribution.
+The main Yeuanne Berry portfolio: five project case studies and a curated public-code collection. The featured websites were delivered through Yappers; each case study records the owner's specific contribution.
 
-Astro + React, static output. Reading, project navigation and repository links
-work without JavaScript. The chapter index renders all six guides immediately;
-there are no React islands or search/filter controls. The Astro + React stack
-remains configured. A small vanilla script highlights the section being read in
-both contents lists, without changing URL history or moving focus. Heading links
-remain native anchors and work without JavaScript.
-Chapter navigation, page contents and source details use shared Berry disclosure
-styling with Lucide chevrons, 44px controls, bounded panels and reduced-motion
-support. They keep native details/summary keyboard and no-JavaScript behavior.
+Astro + React, static output. The documentation reader is maintained independently in `berry-docs`; canonical guides belong to `berry-desktop`. This repo owns no reader routes or generated guide content. See [repository separation](docs/REPOSITORY-SPLIT.md).
+
 Mobile navigation uses a full-screen native dialog with an early inline controller;
 it works before animation scripts download. Without JavaScript the regular links
 remain visible. Open/close buttons share the same size and header alignment; their
-header divider spans the same full width in both states. Browser and
-social metadata use only "Yeuanne Berry". External links open a new tab with
+header divider spans the same full width in both states. Page-specific titles and descriptions retain the Yeuanne Berry branding. External links open a new tab with
 noopener/noreferrer and an accessible hint; internal navigation stays in place.
 The original portrait supplies high-density responsive WebP display images and
 PNG favicon/touch icons. Fonts and
-preview images are served locally. A build-time social card supplies large image
-previews when links are shared. There is no login, database or visitor-side
-GitHub request. Optional Cloudflare Web Analytics is disabled by default and
-restricted to the exact configured production origin when explicitly enabled.
+preview images are served locally. Each route has a versioned 1200×630 social image. Project cards keep Berry's dark frame and monospace branding, with one project title, a brief description and contribution credit; subtle font and color choices hint at each project. There is no visitor account or visitor-side GitHub request. Optional first-party statistics use a small Worker and D1 aggregate counters, with an owner-only dashboard at `/admin/stats/`. Collection is disabled by default and restricted to the exact configured production origin. See the public `/privacy/` page for the exact measurements, purposes, retention and browser opt-out.
 
 Selected Lucide icons render as static Astro SVGs. Motion's vanilla JavaScript
 mini entry adds 220ms menu entrances and 160ms exits; CSS uses 140ms interaction
@@ -54,10 +41,9 @@ are checked locally without publishing them.
 pnpm check
 ```
 
-This checks reader integrity, types, the static production build, and Chromium
+This checks portrait integrity, types, the static production build, and Chromium
 at desktop/phone sizes, plus separate preview/production metadata builds and
-initial asset budgets, plus local Cloudflare headers/routing and a stubbed
-analytics fixture. [Performance notes](docs/PERFORMANCE.md) distinguish local
+initial asset budgets, plus local Worker/D1 authentication, aggregate storage, privacy controls and browser-event checks. [Performance notes](docs/PERFORMANCE.md) distinguish local
 loading observations from real visitor metrics. Install the matching browser once with
 `pnpm exec playwright install chromium` if needed. Test screenshots/traces under
 test-results are ignored. The test preview uses Astro's `--ignore-lock` mode so
@@ -70,14 +56,7 @@ visual credits and Yappers attribution accurate. A source field stays null unles
 the code is public. Public GitHub metadata is curated in `data/repositories.ts`;
 forks are labelled and no unverified changes, metrics or stack are claimed.
 
-The six manual chapters are generated from exact committed Berry desktop guides.
-That repository owns presets and manual content; the website owns presentation.
-Follow [reader maintenance](docs/READER-MAINTENANCE.md) to refresh them. The
-source-publication flag prevents links to an unpublished candidate. Private
-machine/AI sources are not imported into this reader.
-
-The native Markdown visitor in `apps/web/external-links.mjs` adds new-tab behavior
-to rendered guide links. Keep this presentation rule out of generated chapters.
+The portfolio has no docs-site links or build settings. Neither app needs the other's checkout to install, build or run. Each owns its own copy of the small workspace configuration package. Public GitHub links to Berry desktop remain part of the code collection.
 
 About uses a static ASCII derivative of the supplied portrait, in 80x48 desktop
 and 48x29 phone grids. A reviewed SVG foreground mask selects the character;
@@ -123,7 +102,7 @@ combination unless a deliberate update resolves all peer requirements. Keep
 `pnpm peers check` clean. No generator or global tooling update is needed to edit
 this site.
 
-Wrangler is a development-only tool for local static-asset proofs. Its pinned
+Wrangler is pinned as development tooling for local static-asset and analytics proofs. No command in `pnpm check` deploys or accesses a remote database. Its pinned
 esbuild/workerd installers are the two approved package builds. Exact release-age
 exceptions in `pnpm-workspace.yaml` cover Wrangler and its bundled Miniflare
 version; review those exceptions when deliberately upgrading the local tool.

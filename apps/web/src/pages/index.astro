@@ -17,7 +17,7 @@ import "../styles/portfolio.css";
         <h1 id="page-title">Yeuanne Berry<span class="olive" aria-hidden="true">.</span></h1>
         <NamePronunciation />
         <p class="portfolio-lede">Head IT Administrator and web developer.</p>
-        <div class="hero-actions"><a class="button" href="/work/">View projects <Icon name="arrow-right" /></a><a class="subtle-link" href="/docs/">Berry docs <Icon name="arrow-right" /></a></div>
+        <div class="hero-actions"><a class="button" href="/work/">View projects <Icon name="arrow-right" /></a></div>
       </div>
       <div class="portrait-wrap"><Image src={portrait} alt="Yeuanne Berry" widths={[252, 504, 756]} sizes="(max-width: 700px) 168px, 252px" width={252} height={252} format="webp" quality={90} loading="eager" fetchpriority="high" /></div>
     </section>
@@ -27,10 +27,10 @@ import "../styles/portfolio.css";
       <div class="work-grid">{featuredProjects.map((project) => <WorkCard project={project} headingLevel="h3" />)}</div>
     </section>
 
-    <section class="portfolio-section two-paths" aria-labelledby="beyond-title">
+    <section class="portfolio-section" aria-labelledby="beyond-title">
       <h2 id="beyond-title">Code and configuration</h2>
-      <div class="path-links"><a href="/code/"><h3>Public repositories</h3><p>Source code and forks.</p><b aria-hidden="true"><Icon name="arrow-right" /></b></a><a href="/docs/"><h3>Berry docs</h3><p>Linux configuration and setup guides.</p><b aria-hidden="true"><Icon name="arrow-right" /></b></a></div>
+      <div class="path-links"><a href="/code/"><h3>Public repositories</h3><p>Source code and forks.</p><b aria-hidden="true"><Icon name="arrow-right" /></b></a></div>
     </section>
-    <div class="closing-note"><a class="subtle-link" href={profile.github} target="_blank" rel="noopener noreferrer">github.com/yeuanneberry <Icon name="external" /><span class="sr-only"> (opens in a new tab)</span></a></div>
+    <div class="closing-note"><a class="subtle-link" href={profile.github} data-stats-target="github-profile" target="_blank" rel="noopener noreferrer">github.com/yeuanneberry <Icon name="external" /><span class="sr-only"> (opens in a new tab)</span></a></div>
   </main>
 </Layout>

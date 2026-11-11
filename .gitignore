@@ -54,6 +54,10 @@ coverage
 test-results/
 playwright-report/
 apps/web/public/social-card.png
+apps/web/public/og/
+apps/web/src/generated/social-images.json
+.dev.vars
+.dev.vars.*
 
 # Misc
 *.tgz

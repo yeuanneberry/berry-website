@@ -1,5 +1,6 @@
 export interface PublicRepository {
   name: string;
+  statsTarget: 'repo-berry-desktop' | 'repo-antigravity-usage';
   url: string;
   description: string;
   fork: boolean;
@@ -11,6 +12,7 @@ export interface PublicRepository {
 export const repositories: readonly PublicRepository[] = [
   {
     name: "Berry desktop",
+    statsTarget: "repo-berry-desktop",
     url: "https://github.com/yeuanneberry/berry-desktop",
     description: "Reusable Arch Linux application presets, a minimal Hyprland and Waybar baseline, and guides for adapting them.",
     fork: false,
@@ -18,6 +20,7 @@ export const repositories: readonly PublicRepository[] = [
   },
   {
     name: "Antigravity usage",
+    statsTarget: "repo-antigravity-usage",
     url: "https://github.com/yeuanneberry/antigravity-usage",
     description: "A fork of a command-line tool for model quota and usage information.",
     fork: true,

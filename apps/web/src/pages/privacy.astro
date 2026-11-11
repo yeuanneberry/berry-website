@@ -1,27 +1,62 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { analyticsEnabled } from "../../site.config.mjs";
-import Icon from "../components/Icon.astro";
+import PrivacyControls from "../components/PrivacyControls.astro";
+const measurements = [
+  ["Page views", "Approved page ID, UTC day/month and count; once per visible page load.", "Identify useful pages and traffic trends."],
+  ["Discovery", "Search, social, internal, direct/unknown or other. Full referring URLs are never sent.", "Understand how pages are discovered."],
+  ["Compatibility", "Viewport class (mobile/tablet/desktop) and browser family (Chrome/Edge/Firefox/Safari/other), stored as separate counts.", "Prioritize layout and browser fixes."],
+  ["Outbound actions", "Approved project, repository or profile destination ID and originating page; first click on each target per page load.", "Understand interest in projects and code."],
+  ["Loading performance", "LCP, INP and CLS ratings (good/needs improvement/poor), sampled on 10% of eligible page loads.", "Find loading, interaction and layout problems."],
+  ["Missing pages", "A generic missing-page count. The requested address is never sent.", "Detect navigation problems without recording unknown URLs."],
+];
 ---
-
 <Layout>
   <main id="main-content" class="shell privacy-page" tabindex="-1">
-    <h1>Privacy</h1>
-    {analyticsEnabled ? <>
-      <p>This site uses Cloudflare Web Analytics to understand page visits and loading performance.</p>
-      <p>The analytics beacon does not use cookies or local storage. It reports information such as the page visited, referring site, browser, device, country and loading measurements. It is configured to run only on this site's production address.</p>
-      <p>There are no advertising trackers or contact forms. Hosting providers may process request information when delivering pages.</p>
-      <a href="https://developers.cloudflare.com/speed/observatory/rum-beacon/" target="_blank" rel="noopener noreferrer">Cloudflare's data collection details <Icon name="external" /><span class="sr-only"> (opens in a new tab)</span></a>
-    </> : <>
-      <p>This site currently uses no visitor analytics or advertising trackers.</p>
-      <p>There are no contact forms. Hosting providers may process request information when delivering pages.</p>
-    </>}
-    <p>External links open other websites, which have their own privacy practices.</p>
+    <h1>Privacy & analytics</h1>
+    <p class="status">{analyticsEnabled ? "Limited first-party analytics is enabled only on this site's configured production address." : "Analytics is currently disabled. No browser statistics are sent by this build."}</p>
+    <p>We use limited aggregate statistics to improve this portfolio, understand interest in projects and code, and fix performance problems. Statistics are available only to the site owner. We do not sell them, publish them, use them for advertising, or combine them into cross-site visitor profiles.</p>
+    <h2>What is measured, and why</h2>
+    <p>The following measurements apply only when collection is enabled and your privacy choice allows it.</p>
+    <div class="table-wrap"><table><thead><tr><th scope="col">Measurement</th><th scope="col">Data and trigger</th><th scope="col">Purpose</th></tr></thead><tbody>{measurements.map(([name, data, purpose]) => <tr><th scope="row">{name}</th><td>{data}</td><td>{purpose}</td></tr>)}</tbody></table></div>
+    <div class="measurement-cards">{measurements.map(([name, data, purpose]) => <section><h3>{name}</h3><p><strong>Data and trigger:</strong> {data}</p><p><strong>Purpose:</strong> {purpose}</p></section>)}</div>
+    <p>These are counts of received page loads and actions, not unique people. Repeat loads, opt-outs, blockers, connection failures and automated submissions affect the results. Performance ratings show sample distributions, not exact percentiles. Analytics cannot establish a person's identity or prove that someone read a page.</p>
+    <h2>What is not collected</h2>
+    <p>Application analytics does not store IP addresses, names, email addresses, precise location, full user-agent strings, full referring URLs, URL queries or fragments, form contents, keystrokes or session recordings. It creates no visitor IDs, persistent analytics cookies or fingerprints. Browser family and referral category are reduced in your browser before submission.</p>
+    <p>Requests go only to this site's first-party collection endpoint. The external Cloudflare Web Analytics beacon is not used. Only fixed, approved page and destination labels are accepted. Raw event records and request bodies are not saved: accepted events increment aggregate counters.</p>
+    <PrivacyControls />
+    <h2>Access and retention</h2>
+    <p>Only the owner can read the statistics, through an authenticated private view. There is no public statistics feed or read endpoint, and no automatic export. Daily buckets are retained for 90 days, including the current UTC day; monthly buckets for 13 calendar months, including the current month. A daily scheduled task removes expired buckets. The private view shows when that task last ran.</p>
+    <p>Your opt-out preference is local to this site and browser and is not sent as an event. Opting out stops new collection; existing aggregates cannot be linked back to a browser for individual removal.</p>
+    <h2>Hosting providers and backups</h2>
+    <p>Hosting providers necessarily process connection information, including IP addresses, to deliver and secure requests. That processing is separate from application analytics. The application does not read IP addresses for its rate limits; limits use fixed site-wide keys.</p>
+    <p>The prepared hosting uses Cloudflare Workers and D1 for application execution and aggregate storage. Application request logging is disabled in the prepared configuration, but this is not a promise that all provider security or operational logs are disabled. Provider logging and retention must be verified before launch.</p>
+    <p>Deleting live aggregates does not immediately remove backup copies. Cloudflare D1 recovery history can retain prior data for up to 7 days on the Free plan or 30 days on a paid plan. The selected account plan and backup policy must be confirmed before collection is activated.</p>
+    <p><a href="https://developers.cloudflare.com/d1/platform/limits/" target="_blank" rel="noopener noreferrer">Cloudflare D1 retention information<span class="sr-only"> (opens in a new tab)</span></a></p>
+    <h2>Other websites and questions</h2>
+    <p>Following links to projects, repositories or other websites is subject to those sites' privacy practices.</p>
+    <p>Site owner: Yeuanne Berry. <a href="https://github.com/yeuanneberry" target="_blank" rel="noopener noreferrer">Owner profile and contact information<span class="sr-only"> (opens in a new tab)</span></a>.</p>
+    <p class="updated">Last updated: <time datetime="2026-11-11">11 November 2026</time>. Domain purchase, deployment and live collection remain pending.</p>
   </main>
 </Layout>
-
 <style>
   .privacy-page { padding-block: 4rem 5rem; min-height: 65vh; }
-  p { max-width: 55rem; color: var(--muted); line-height: 1.9; margin-bottom: 1.5rem; }
+  p { max-width: 65rem; color: var(--muted); line-height: 1.9; margin-bottom: 1.5rem; }
+  h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; }
   a { color: var(--ochre); }
+  .status { color: var(--bright); padding: 1rem; border-left: 3px solid var(--olive); background: var(--surface); }
+  .table-wrap { max-width: 100%; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  th, td { padding: .8rem; border: 1px solid var(--border); vertical-align: top; text-align: left; overflow-wrap: anywhere; }
+  th { color: var(--ochre); background: var(--surface); }
+  .updated { font-size: .8rem; }
+  .measurement-cards { display: none; }
+  @media(max-width: 600px) {
+    .table-wrap { display: none; }
+    .measurement-cards { display: grid; gap: 1rem; margin-block: 1.5rem; }
+    .measurement-cards section { border: 1px solid var(--border); padding: 1rem; }
+    .measurement-cards h3 { color: var(--ochre); font-size: 1rem; margin-bottom: .75rem; }
+    .measurement-cards p { font-size: .85rem; margin-bottom: .75rem; }
+    .measurement-cards p:last-child { margin-bottom: 0; }
+  }
 </style>

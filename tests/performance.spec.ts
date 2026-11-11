@@ -3,7 +3,7 @@ import { writeFile } from 'node:fs/promises';
 
 test('initial pages stay within asset budgets and record local loading metrics', async ({ browser, baseURL }, info) => {
   const report = [];
-  for (const path of ['/', '/about/', '/work/', '/docs/customize/']) {
+  for (const path of ['/', '/about/', '/work/', '/code/']) {
     const context = await browser.newContext({ baseURL, viewport: info.project.use.viewport });
     const page = await context.newPage();
     const external: string[] = [];

@@ -4,8 +4,11 @@ Measured 2026-10-27 with local Chromium, cold browser contexts, unthrottled
 localhost traffic and the project's 1440x900 / 375x812 viewports. These are lab
 observations, not production Core Web Vitals or guarantees about visitors.
 
-The baseline build was `2864392`. Before/after checks covered `/`, `/about/`,
-`/work/` and `/docs/customize/` at both sizes.
+The historical combined-site baseline was `2864392`. Before/after checks covered
+`/`, `/about/`, `/work/` and `/docs/customize/` at both sizes. Following separation,
+website checks cover `/`, `/about/`, `/work/` and `/code/`; reader performance is
+checked in berry-docs. The table below records the historical baseline, not a new
+measurement of the split.
 
 | Initial resource | Baseline | Updated | Check |
 | --- | ---: | ---: | --- |
@@ -30,3 +33,12 @@ percentiles are outside this check. Existing tests still verify image loading,
 responsive sources, high-density pixels, keyboard interaction and reduced motion.
 Real-user measurement can be enabled at launch after the analytics configuration
 is reviewed. No live visitor metrics exist for this unhosted site.
+
+## First-party measurement preparation
+
+The historical byte table above predates the first-party collector. Current browser tests enforce the same font/CSS/JS budgets on disabled builds. The collector is bundled locally; the web-vitals module is imported only on 10% of eligible production page loads. The local Worker proof exercises that sampled path separately. Received LCP/INP/CLS rating counts are aggregate distributions, not exact p75 values or unique visitor counts. No live performance statistics exist yet.
+
+The 2026-11-11 follow-up measured 14,127 JavaScript bytes, 92,392 font bytes and
+11,829–16,611 CSS bytes across the four website routes at both test viewports.
+Recorded CLS was zero in these local runs. These remain unthrottled lab results;
+they do not predict production timing or replace measurements after launch.

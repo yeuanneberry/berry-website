@@ -1,6 +1,6 @@
 # Source and asset notices
 
-This source contains original portfolio implementation and a generated reader.
+This source contains the original portfolio implementation.
 Original implementation and documentation are released under the MIT license
 in LICENSE, following the owner's approval to proceed with the sharing plan.
 The MIT grant excludes the profile artwork, project-preview images and bundled
@@ -38,16 +38,23 @@ WOFF2 is a format conversion of the retained original TTF, without subsetting or
 glyph changes (woff2 1.0.2). Its SIL Open Font License 1.1 is retained at
 `apps/web/public/fonts/OFL.txt`. Other dependencies retain their own licenses.
 Regenerate with `woff2_compress apps/web/public/fonts/JetBrainsMono-Regular.ttf`.
-The generated social card also retains the profile artwork and font exclusions.
+Portfolio social cards retain the portrait and font notices. Project social cards present a brief typographic summary with project-inspired font/color cues inside the Berry portfolio frame; they contain no screenshots, project imagery or reproduced logos.
+
+The unmodified Liberation Sans Bold and Liberation Serif Regular fonts under
+`scripts/fonts` are build-time-only inputs for project social cards, not website
+font downloads. Copyright 2010 Google Corporation and 2012 Red Hat, Inc.; the
+SIL Open Font License 1.1 and reserved-name notices are retained in
+`scripts/fonts/Liberation-OFL.txt`. The card typefaces suggest a mood rather than
+claiming to reproduce each project's exact font.
 No wallpaper or historical desktop artwork is part of this release tree.
 
 Lucide icons and Motion retain their upstream licenses, reproduced in
 [third-party notices](THIRD_PARTY_NOTICES.md). Only selected Lucide SVGs are used;
-Motion's JavaScript mini entry enhances the native menu controller.
+Motion's JavaScript mini entry enhances the native menu controller. The optional web-vitals runtime retains Apache 2.0; its full license is included in `licenses/web-vitals-LICENSE.txt`.
 
-## Documentation
+## Documentation reader
 
-The reader records its canonical source revision, selected files and hashes in
-`docs/reader-sources.json` and `docs/reader-lock.json`. Follow the owning source's
-notices. Committed source and asset selection is not evidence of live installation
-or product operational acceptance.
+The generated Berry reader was extracted into the independent `berry-docs`
+repository. Canonical guide content remains owned by `berry-desktop`. This
+website does not link to the reader or embed or author its chapters. Historical
+Git revisions still retain the original combined tree and its notices.

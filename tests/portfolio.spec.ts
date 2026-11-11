@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import metadata from '../apps/web/page-metadata.json' with { type: 'json' };
 
 const projects = [
   { slug: 'masqify', title: 'Masqify', role: 'Full implementation', url: 'https://masqify.me/' },
@@ -52,7 +53,7 @@ test('personal home has the approved portrait, usable navigation and picture fav
   await page.screenshot({ path: info.outputPath('portfolio-home.png'), fullPage: true });
   if (info.project.name === 'phone') await page.getByRole('button', { name: 'Open menu', exact: true }).click();
   const primary = page.getByRole('navigation', { name: 'Primary', exact: true });
-  for (const [name, path] of [['Home', '/'], ['Work', '/work/'], ['Code', '/code/'], ['Berry docs', '/docs/'], ['About', '/about/']]) {
+  for (const [name, path] of [['Home', '/'], ['Work', '/work/'], ['Code', '/code/'], ['About', '/about/']]) {
     await expect(primary.getByRole('link', { name, exact: true })).toHaveAttribute('href', path);
   }
   await primary.getByRole('link', { name: 'Work', exact: true }).click();
@@ -134,18 +135,20 @@ test('work browsing and case navigation remain usable without JavaScript', async
   } finally { await page.close(); }
 });
 
-test('all pages have plain metadata, safe new-tab links and no browser errors', async ({ page }) => {
+test('all pages have specific metadata, safe new-tab links and no browser errors', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
   page.on('response', response => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
-  const chapters = ['overview', 'start', 'customize', 'apply-recover', 'update', 'reference'];
-  for (const path of ['/', '/work/', '/code/', '/about/', '/docs/', ...projects.map(project => `/work/${project.slug}/`), ...chapters.map(id => `/docs/${id}/`)]) {
+  for (const path of ['/', '/work/', '/code/', '/about/', ...projects.map(project => `/work/${project.slug}/`)]) {
     const response = await page.goto(path);
     expect(response?.status(), path).toBe(200);
-    await expect(page).toHaveTitle('Yeuanne Berry');
-    for (const selector of ['meta[name="description"]', 'meta[property="og:title"]', 'meta[property="og:description"]']) {
-      await expect(page.locator(selector)).toHaveAttribute('content', 'Yeuanne Berry');
+    const meta = metadata[path as keyof typeof metadata];
+    await expect(page).toHaveTitle(meta.title);
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', meta.title);
+    await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute('content', meta.title);
+    for (const selector of ['meta[name="description"]', 'meta[property="og:description"]']) {
+      await expect(page.locator(selector)).toHaveAttribute('content', meta.description);
     }
     const links = await page.locator('a').evaluateAll(elements => elements.map(element => element.href));
     const allowedHosts = new Set([

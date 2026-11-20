@@ -14,10 +14,10 @@ const Heading = headingLevel;
 ---
 
 <article class="work-card">
-  <a class="work-preview-link" href={`/work/${project.slug}/`} aria-label={`Read about ${project.title}`}>
+  <div class="work-preview">
     <Image src={project.preview} alt={project.previewAlt} widths={[480, 800, 1200]} sizes="(max-width: 700px) 100vw, 50vw" format="webp" loading="lazy" />
     <span class="work-preview-label" aria-hidden="true">Read project <Icon name="arrow-right" /></span>
-  </a>
+  </div>
   <div class="work-card-copy">
     <p class="work-kind">{project.kind}</p>
     <Heading><a href={`/work/${project.slug}/`}>{project.title}</a></Heading>

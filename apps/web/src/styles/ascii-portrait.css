@@ -1,6 +1,8 @@
 .ascii-portrait {
   flex: 0 0 auto;
   max-width: 100%;
+  overflow-x: clip;
+  user-select: none;
   margin: 0;
   color: var(--paper);
   font-family: "JetBrains Mono", monospace;

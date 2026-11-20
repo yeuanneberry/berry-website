@@ -1,17 +1,24 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Icon from "../components/Icon.astro";
+import "../styles/portfolio.css";
 ---
 
 <Layout noindex>
   <main id="main-content" class="shell missing-page" tabindex="-1">
+    <p class="eyebrow">Error 404</p>
     <h1>Page not found</h1>
     <p>The address may have changed.</p>
     <a class="subtle-link" href="/">Home <Icon name="arrow-right" /></a>
+    <div class="path-links">
+      <a href="/work/"><h2>Work</h2><p>Selected projects.</p><b aria-hidden="true"><Icon name="arrow-right" /></b></a>
+      <a href="/code/"><h2>Code</h2><p>Public repositories.</p><b aria-hidden="true"><Icon name="arrow-right" /></b></a>
+      <a href="/about/"><h2>About</h2><p>Who I am.</p><b aria-hidden="true"><Icon name="arrow-right" /></b></a>
+    </div>
   </main>
 </Layout>
 
 <style>
-  .missing-page { padding-block: 5rem; min-height: 65vh; }
+  .missing-page { padding-block: 5rem; }
   p { color: var(--muted); margin-bottom: 2rem; }
 </style>

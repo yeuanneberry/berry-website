@@ -40,23 +40,24 @@ const measurements = [
   </main>
 </Layout>
 <style>
-  .privacy-page { padding-block: 4rem 5rem; min-height: 65vh; }
-  p { max-width: 65rem; color: var(--muted); line-height: 1.9; margin-bottom: 1.5rem; }
+  .privacy-page { padding-block: 4rem 5rem; }
+  .privacy-page > * { max-width: 60rem; }
+  p { max-width: 72ch; color: var(--muted); line-height: 1.9; margin-bottom: 1.5rem; }
   h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; }
   a { color: var(--ochre); }
   .status { color: var(--bright); padding: 1rem; border-left: 3px solid var(--olive); background: var(--surface); }
   .table-wrap { max-width: 100%; overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+  table { width: 100%; border-collapse: collapse; font-size: var(--text-sub); }
   th, td { padding: .8rem; border: 1px solid var(--border); vertical-align: top; text-align: left; overflow-wrap: anywhere; }
   th { color: var(--ochre); background: var(--surface); }
-  .updated { font-size: .8rem; }
+  .updated { font-size: var(--text-sub); }
   .measurement-cards { display: none; }
   @media(max-width: 600px) {
     .table-wrap { display: none; }
     .measurement-cards { display: grid; gap: 1rem; margin-block: 1.5rem; }
     .measurement-cards section { border: 1px solid var(--border); padding: 1rem; }
     .measurement-cards h3 { color: var(--ochre); font-size: 1rem; margin-bottom: .75rem; }
-    .measurement-cards p { font-size: .85rem; margin-bottom: .75rem; }
+    .measurement-cards p { font-size: var(--text-sub); margin-bottom: .75rem; }
     .measurement-cards p:last-child { margin-bottom: 0; }
   }
 </style>

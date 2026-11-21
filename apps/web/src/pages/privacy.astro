@@ -41,15 +41,20 @@ const measurements = [
 </Layout>
 <style>
   .privacy-page { padding-block: 4rem 5rem; }
-  .privacy-page > * { max-width: 60rem; }
-  p { max-width: 72ch; color: var(--muted); line-height: 1.9; margin-bottom: 1.5rem; }
+  /* One measure for prose, table and choice box: about 80 characters. */
+  .privacy-page > * { max-width: 48rem; }
+  p { color: var(--muted); line-height: 1.9; margin-bottom: 1.5rem; }
   h2 { font-size: 1.5rem; margin: 2.5rem 0 1rem; }
   a { color: var(--ochre); }
   .status { color: var(--bright); padding: 1rem; border-left: 3px solid var(--olive); background: var(--surface); }
   .table-wrap { max-width: 100%; overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: var(--text-sub); }
-  th, td { padding: .8rem; border: 1px solid var(--border); vertical-align: top; text-align: left; overflow-wrap: anywhere; }
-  th { color: var(--ochre); background: var(--surface); }
+  th, td { padding: .8rem; border: 1px solid var(--border); vertical-align: top; text-align: left; }
+  /* Labels keep whole words; only the data cells may break anywhere. */
+  th { color: var(--ochre); background: var(--surface); overflow-wrap: normal; }
+  td { overflow-wrap: anywhere; }
+  th:first-child { width: 9.5rem; }
+  td:last-child { width: 30%; }
   .updated { font-size: var(--text-sub); }
   .measurement-cards { display: none; }
   @media(max-width: 600px) {

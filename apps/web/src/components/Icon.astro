@@ -16,4 +16,4 @@ const { name, size = 18, class: className } = Astro.props;
 const Symbol = icons[name];
 ---
 
-<Symbol size={size} stroke-width={1.75} class:list={["ui-icon", className]} aria-hidden="true" focusable="false" />
+<Symbol size={size} stroke-width={1.75} class:list={["ui-icon", `ui-icon-${name}`, className]} aria-hidden="true" focusable="false" />

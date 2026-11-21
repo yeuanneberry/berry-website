@@ -22,7 +22,14 @@
   overflow-wrap: normal;
   tab-size: 1;
 }
-.ascii-portrait .ascii-portrait-mobile { display: none; }
+/* The portrait prints row by row, like terminal output: two rows per step on
+   the desktop grid, one on the phone grid. Reduced motion shows it at once. */
+@keyframes ascii-print {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0); }
+}
+.ascii-portrait .ascii-portrait-desktop { animation: ascii-print 720ms steps(24, end) 120ms backwards; }
+.ascii-portrait .ascii-portrait-mobile { display: none; animation: ascii-print 580ms steps(29, end) 120ms backwards; }
 @media (max-width: 1000px) {
   .ascii-portrait .ascii-portrait-desktop { display: none; }
   .ascii-portrait .ascii-portrait-mobile { display: block; }

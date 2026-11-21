@@ -15,7 +15,13 @@ preview images are served locally. Each route has a versioned 1200×630 social i
 
 Selected Lucide icons render as static Astro SVGs. Motion's vanilla JavaScript
 mini entry adds 220ms menu entrances and 160ms exits; CSS uses 140ms interaction
-transitions and 320ms introductions. Reduced motion disables decorative movement.
+transitions, a 240ms settle for project previews and 320ms introductions. Each
+page arrives in two beats 70ms apart: the introduction, then the first block
+below it. The home portrait settles into its tilt, About's ASCII portrait prints
+row by row, and the menu panel fades in where `@starting-style` is supported.
+Icons lean the way their link leads, and a card's single stretched link rings
+the whole card on keyboard focus. Reduced motion disables decorative movement,
+including hover lifts and icon nudges; colour and border feedback remain.
 Core menu behavior never waits for Motion, and interrupted transitions keep native
 focus and background-scroll handling until the dialog is closed.
 

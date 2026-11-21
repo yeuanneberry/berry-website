@@ -2,7 +2,13 @@
 .portfolio-hero h1 { font-size: var(--display); letter-spacing: -.065em; margin-bottom: .4rem; }
 .name-pronunciation { color: var(--muted); font-size: var(--text-sub); margin: 0 0 1.25rem; }
 .portfolio-lede { color: var(--paper); font-size: clamp(1.1rem, 2vw, 1.55rem); line-height: 1.65; max-width: 45rem; margin: 0 0 1.25rem; }
-.portrait-wrap { justify-self: center; border: 1px solid var(--border); padding: .75rem; background: var(--surface); transform: rotate(3deg); }
+/* The frame starts level and settles into its tilt with the hero; no delay,
+   so the portrait still paints on the first frame. */
+@keyframes portrait-settle {
+  from { transform: translateY(8px) rotate(0deg); }
+  to { transform: rotate(3deg); }
+}
+.portrait-wrap { justify-self: center; border: 1px solid var(--border); padding: .75rem; background: var(--surface); transform: rotate(3deg); animation: portrait-settle 520ms var(--ease-enter) backwards; }
 .portrait-wrap img { width: 18rem; aspect-ratio: 1; border-radius: 2px; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
 .portfolio-section { padding-top: 3rem; border-top: 1px solid var(--border); margin-top: 4rem; }
@@ -13,7 +19,8 @@
 .path-links > a:hover { border-color: var(--olive); }
 .path-links :is(h2, h3) { font-size: 1rem; margin-block: .75rem .4rem; }
 .path-links p { color: var(--muted); font-size: var(--text-sub); margin: 0; }
-.path-links b { position: absolute; right: 1.25rem; top: 1.4rem; font-weight: 400; color: var(--olive); }
+.path-links b { position: absolute; right: 1.25rem; top: 1.4rem; font-weight: 400; color: var(--olive); transition: color var(--motion-fast) var(--ease-interact); }
+.path-links > a:is(:hover, :focus-visible) b { color: var(--ochre); }
 .about-page, .code-page { padding-block: 4rem 5rem; }
 .about-intro { display: flex; justify-content: space-between; align-items: center; gap: 3rem; padding-bottom: 3.5rem; border-bottom: 1px solid var(--border); }
 .about-intro h1 { font-size: var(--title); }
@@ -36,8 +43,9 @@
 .repository-card h2 { font-size: 1.2rem; letter-spacing: -.02em; }
 .repository-card h2 a { text-decoration: none; }
 .repository-card > p { color: var(--muted); font-size: var(--text-sub); line-height: 1.9; margin-block: 1rem 1.75rem; }
-.repository-cta { display: inline-flex; align-items: center; gap: .5em; margin-top: auto; width: fit-content; font-size: var(--text-sub); }
+.repository-cta { display: inline-flex; align-items: center; gap: .5em; margin-top: auto; width: fit-content; font-size: var(--text-sub); transition: color var(--motion-fast) var(--ease-interact); }
 .repository-card:hover .repository-cta { color: var(--ochre); }
+.repository-card:has(a:focus-visible) .repository-cta { color: var(--ochre); }
 @media (max-width: 1000px) { .portfolio-hero { grid-template-columns: minmax(0, 1fr) 14rem; gap: 2.5rem; } .portfolio-section .work-grid { gap: 1.3rem; } }
 @media (max-width: 700px) {
   .portfolio-hero { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; padding-top: 0; }

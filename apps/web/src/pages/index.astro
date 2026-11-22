@@ -24,7 +24,7 @@ import "../styles/portfolio.css";
 
     <section class="portfolio-section" aria-labelledby="selected-title">
       <div class="section-heading"><h2 id="selected-title">Projects</h2><a class="subtle-link" href="/work/">All projects <Icon name="arrow-right" /></a></div>
-      <div class="work-grid">{featuredProjects.map((project) => <WorkCard project={project} headingLevel="h3" />)}</div>
+      <div class="work-grid">{featuredProjects.map((project) => <WorkCard project={project} headingLevel="h3" sizes="(max-width: 700px) 100vw, 33vw" />)}</div>
     </section>
 
     <section class="portfolio-section" aria-labelledby="beyond-title">

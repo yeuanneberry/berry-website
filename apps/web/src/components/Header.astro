@@ -39,7 +39,7 @@ const current = (href: string) => path === href ? "page" : href !== "/" && path.
         </div>
       </div>
       <nav class="mobile-nav shell" aria-label="Primary">
-        {links.map(([label, href]) => <a href={href} aria-current={current(href!)}>{label}</a>)}
+        {links.map(([label, href]) => <a href={href} aria-current={current(href!)}><span>{label}</span><Icon name="arrow-right" size={22} /></a>)}
       </nav>
     </div>
   </dialog>

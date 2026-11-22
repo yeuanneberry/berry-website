@@ -3,13 +3,29 @@
 .work-intro h1 { max-width: 50rem; font-size: var(--title); line-height: 1.18; }
 .work-intro > p:last-child { color: var(--muted); max-width: 48rem; line-height: 1.9; }
 .work-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem 2rem; }
+/* An odd number of projects (three or more) would leave one card alone in the
+   last row, so the wide index ends with a row of three instead. Without :has
+   it stays two-up. */
+@media (min-width: 1001px) {
+  .work-page > .work-grid:has(> :last-child:nth-child(2n+3)) { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .work-page > .work-grid:has(> :last-child:nth-child(2n+3)) > * { grid-column: span 3; }
+  .work-page > .work-grid:has(> :last-child:nth-child(2n+3)) > :nth-last-child(-n+3) { grid-column: span 2; }
+}
 .work-card { min-width: 0; }
 .work-preview { position: relative; display: block; overflow: hidden; border: 1px solid var(--border); border-radius: 3px; background: var(--surface); }
-.work-preview img { width: 100%; aspect-ratio: 1.65; object-fit: cover; object-position: top; filter: brightness(.88) saturate(.92); transition: filter var(--motion-fast) var(--ease-interact); }
+.work-preview img { width: 100%; aspect-ratio: 1.65; object-fit: cover; object-position: top; filter: brightness(.88) saturate(.92); transition: filter var(--motion-settle) var(--ease-interact); }
+.work-preview-label { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem 1rem; border-top: 1px solid var(--border); color: var(--muted); background: var(--surface); font-size: var(--text-meta); transition: color var(--motion-fast) var(--ease-interact); }
+/* Hover and keyboard focus share one treatment: the frame lifts (global.css),
+   the capture returns to full brightness and the label wakes up. */
 .work-card:hover .work-preview { border-color: var(--olive); }
-.work-card:hover .work-preview img, .work-card:has(a:focus-visible) .work-preview img { filter: none; }
-.work-preview-label { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem 1rem; border-top: 1px solid var(--border); color: var(--muted); background: var(--surface); font-size: var(--text-meta); }
-.work-preview-label > span { color: var(--ochre); }
+.work-card:hover .work-preview img { filter: none; }
+.work-card:hover .work-preview-label { color: var(--bright); }
+/* Kept apart from the hover rules: a browser without :has drops a whole
+   selector list that contains it. */
+.work-card:has(a:focus-visible) .work-preview { border-color: var(--olive); }
+.work-card:has(a:focus-visible) .work-preview img { filter: none; }
+.work-card:has(a:focus-visible) .work-preview-label { color: var(--bright); }
+@media (forced-colors: active) { .work-preview img { filter: none; } }
 .work-card-copy { padding-top: 1.4rem; }
 .work-kind { font-size: var(--text-caps); color: var(--ochre); text-transform: uppercase; letter-spacing: .09em; margin: 0 0 .65rem; }
 .work-card h2, .work-card h3 { font-size: 1.6rem; margin: 0 0 .8rem; }
@@ -33,13 +49,13 @@
 .case-sections { align-self: start; position: sticky; top: 2rem; display: flex; flex-direction: column; gap: .3rem; }
 .case-sections > a { display: block; padding-block: .6rem; font-size: var(--text-meta); text-decoration: none; color: var(--muted); }
 .case-sections > a:hover { color: var(--ochre); }
+.case-step::after { content: " /"; }
 .case-sections > .case-visit { margin-top: 1.25rem; padding-top: 1.2rem; border-top: 1px solid var(--border); color: var(--paper); }
-.case-visit span { color: var(--ochre); margin-left: .6rem; }
 .case-copy { max-width: 49rem; min-width: 0; }
 .case-copy section { margin-bottom: 3rem; }
 .case-copy section > .eyebrow { margin-bottom: .7rem; }
 .case-copy h2 { margin-bottom: 1.2rem; scroll-margin-top: 2rem; }
-.case-copy section > p:not(.eyebrow), .case-copy li { max-width: 72ch; color: var(--muted); font-size: var(--text-sub); line-height: 1.95; }
+.case-copy section > p:not(.eyebrow), .case-copy li { max-width: 72ch; color: var(--muted); font-size: 1rem; line-height: 1.95; }
 .case-copy section > .case-credit { border-left: 2px solid var(--olive); padding-left: 1rem; font-size: var(--text-meta); margin-top: 1.5rem; }
 .case-copy ul { padding-left: 1.3rem; }
 .case-copy li { padding-left: .4rem; margin-block: .75rem; }
@@ -56,16 +72,22 @@
   .work-page { padding-block: 2.5rem 3rem; }
   .work-grid { grid-template-columns: minmax(0, 1fr); gap: 2.75rem; }
   .work-intro { margin-bottom: 2.25rem; }
-  .work-intro > p:last-child { font-size: var(--text-sub); }
   .case-header, .case-body { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
   .case-facts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 1rem; }
   .case-facts > div:first-child { grid-column: 1 / -1; }
-  .case-sections { flex-direction: row; flex-wrap: wrap; gap: 0 1.25rem; position: static; padding-block: .8rem; border-block: 1px solid var(--border); }
-  .case-sections > a { min-height: 2.8rem; }
-  .case-sections > .case-visit { flex: 0 0 100%; margin-top: .4rem; }
+  /* Phone section index: three equal steps, number over label, then the visit
+     link as a full-width row. Labels break only at spaces. */
+  .case-sections { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; position: static; border-block: 1px solid var(--border); }
+  .case-sections > a { display: flex; flex-direction: column; gap: .2rem; padding: .9rem .4rem .9rem 0; line-height: 1.45; overflow-wrap: normal; }
+  .case-sections > a:not(.case-visit):not(:first-child) { padding-left: .75rem; border-left: 1px solid var(--border); }
+  .case-step { color: var(--ochre); font-size: var(--text-caps); letter-spacing: .09em; }
+  .case-step::after { content: none; }
+  .case-sections > .case-visit { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; min-height: 3.25rem; margin-top: 0; padding: .6rem 0; border-top: 1px solid var(--border); }
   .case-body { padding-block: 2rem 3rem; }
-  .case-preview figcaption { font-size: var(--text-meta); }
-  .case-lede { font-size: var(--text-sub); }
-  .case-copy section > p:not(.eyebrow), .case-copy li { font-size: var(--text-sub); }
-  .case-pagination a { font-size: var(--text-meta); }
+}
+/* Too narrow for three columns of whole words: one step per row instead. */
+@media (max-width: 374px) {
+  .case-sections { grid-template-columns: minmax(0, 1fr); }
+  .case-sections > a:not(.case-visit) { flex-direction: row; align-items: center; gap: .9rem; min-height: 44px; padding: .6rem 0; }
+  .case-sections > a:not(.case-visit):not(:first-child) { padding-left: 0; border-left: 0; border-top: 1px solid var(--border); }
 }

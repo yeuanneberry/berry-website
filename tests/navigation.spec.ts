@@ -75,6 +75,8 @@ test('About has the approved bio and ASCII without decorative copy', async ({ pa
   expect((await portrait.boundingBox())!.width).toBeLessThan(page.viewportSize()!.width);
   await expect(page.locator('.site-footer')).not.toContainText('Built with care');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  // Entrance animations move the content a few pixels; measure the settled layout.
+  await page.evaluate(() => Promise.all(document.getAnimations().map(animation => animation.finished)));
   const [work, berry, links] = await page.locator('.about-body > section').all();
   const workBox = (await work!.boundingBox())!;
   const berryBox = (await berry!.boundingBox())!;

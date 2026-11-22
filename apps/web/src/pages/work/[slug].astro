@@ -36,9 +36,9 @@ const next = projects[(index + 1) % projects.length]!;
     </figure>
     <div class="case-body">
       <nav class="case-sections" aria-label="Project sections">
-        <a href="#the-project">01 / The project</a>
-        <a href="#my-contribution">02 / My contribution</a>
-        <a href="#delivery">03 / What I delivered</a>
+        <a href="#the-project"><span class="case-step">01</span> The project</a>
+        <a href="#my-contribution"><span class="case-step">02</span> My contribution</a>
+        <a href="#delivery"><span class="case-step">03</span> What I delivered</a>
         <a class="case-visit" href={project.url} data-stats-target={"project-" + project.slug} target="_blank" rel="noopener noreferrer">Visit {project.title} <Icon name="external" /><span class="sr-only"> (opens in a new tab)</span></a>
       </nav>
       <div class="case-copy">
